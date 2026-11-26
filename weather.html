@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2ff;
+            }
+
+        #outer {
+            text-align: center;
+            margin-top: 100px;
+               }
+
+        #input {
+            padding: 12px 15px;
+            width: 250px;
+            border: 2px solid #2563eb;
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+              }
+
+       #btn {
+           padding: 12px 20px;
+           background: #2563eb;
+           color: white;
+           border: none;
+           border-radius: 8px;
+           font-size: 16px;
+           cursor: pointer;
+           margin-left: 8px;
+         }
+
+      #btn:hover {
+          background: #1d4ed8;
+                 }
+    </style>
+</head>
+<body>
+    <div id="outer">
+        <h1>Weather Deshboard</h1>
+        <input type="text" placeholder="Enter your city name" id="input">
+        <button id="btn"> Get Weathert</button>
+        <div id="inner"></div>
+    </div>
+
+    <script>
+        const accessKey="365a5640a305d8b613ba1997d7af2ced"
+
+const input = document.getElementById("input");
+const btn = document.getElementById("btn");
+const inner = document.getElementById("inner");
+
+async function GetWeather() {
+
+    const city = input.value.trim();
+
+    // if (city === "") {
+    //     alert("Please enter city name");
+    //     return;
+    // }
+
+    // inner.innerHTML = "";
+
+    try {
+        const res = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${accessKey}&units=metric`
+        );
+
+//         if (!res.ok) {
+//     inner.textContent = "City not found!";
+//     return;
+// }
+
+
+        const data = await res.json();
+
+        const h2 = document.createElement("h2");
+        h2.textContent = data.name;
+
+        const temp = document.createElement("p");
+        temp.textContent = `Temperature: ${data.main.temp}°C`;
+
+        const weather = document.createElement("p");
+        weather.textContent = `Weather: ${data.weather[0].main}`;
+
+        const humidity = document.createElement("p");
+        humidity.textContent = `Humidity: ${data.main.humidity}%`;
+
+        inner.append(h2, temp, weather, humidity);
+
+    } 
+    catch (error) {
+        inner.textContent = "Something went wrong!";
+        console.log(error);
+    }
+}
+
+btn.addEventListener("click", GetWeather);
+
+input.addEventListener("keydown", function(event) { 
+    if (event.key === "Enter") {
+        GetWeather();
+    }
+});
+    </script>
+</body>
+</html>
